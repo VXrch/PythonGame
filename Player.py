@@ -1,39 +1,69 @@
-from Balls import *
+import arcade
+from Screen import *
 
-class MyPlayer:
+class MyPlayer(arcade.Sprite):
 
-    def __init__(self, width: int = 100, speed: int = 50):
+    def __init__(self, width: int = 100, speed: int = 800, texture: str = "Images\png\element_purple_rectangle.png"):
+        super().__init__(texture, scale=1.0)
 
         self._screen = MyScreen.GetScreen()
+        self._speed = speed
 
-        self._player_x = self._screen.get_width / 2
-        self._player_y = 100
-        self._player_speed = speed
+        self.center_x = self._screen.width / 2
+        self.center_y = 100
+
+        self.health = 3
+
         self._right = False
         self._left = False
 
-        self._player_width = width
-        self._player_height = 24
+        self.width = width
+        self.height = 24
+
+#-------------------------------------------------------------------------------
 
     def move_right(self, delta_time: float):
-        self._player_x += self._player_speed * delta_time
+        if self._right:
+            new_x = self.center_x + self._speed * delta_time
+
+            # check right border
+            if new_x + self.width / 2 <= self._screen.width:
+                self.center_x = new_x
+            else:
+                self.center_x = self._screen.width - self.width / 2 # set player to border
 
     def move_left(self, delta_time: float):
-        self._player_x -= self._player_speed * delta_time
+        if self._left:
+            new_x = self.center_x - self._speed * delta_time
+
+            # check left border
+            if new_x - self.width / 2 >= 0:
+                self.center_x = new_x
+            else:
+                self.center_x = self.width / 2  # set player to border
 
     def draw(self):
-        pass
+        super().draw()
+        self.draw_hearts()
+
+    def draw_hearts(self):
+        heart_texture = arcade.load_texture("Images\png\heart.png")
+        heart_size = 24 # px
+        margin = 10 # space
+
+        for i in range(self.health):
+            x = self._screen.width - heart_size - (margin * (i * 3))
+            y = heart_size + 10
+            arcade.draw_texture_rectangle(x, y, heart_size, heart_size, heart_texture)
+
 
 #-------------------------------------------------------------------------------
 
     @property
-    def player_x(self): return self._player_x
+    def x(self): return self.center_x
 
     @property
-    def player_y(self): return self._player_y
-
-    @property
-    def player_speed(self): return self._player_speed
+    def y(self): return self.center_y
 
     @property
     def go_right(self): return self._right
@@ -42,10 +72,13 @@ class MyPlayer:
     def go_left(self): return self._left
 
     @property
-    def player_width(self): return self._player_width
+    def pl_width(self): return self.width
 
     @property
-    def player_height(self): return self._player_height
+    def pl_height(self): return self.height
+
+    @property
+    def speed(self): return self._speed
 
 #-------------------------------------------------------------------------------
 
@@ -55,17 +88,17 @@ class MyPlayer:
     @go_right.setter
     def go_right(self, value: bool): self._right = value
 
-    @player_x.setter
-    def player_x(self, value: int): self._player_x = value
+    @x.setter
+    def x(self, value: int): self._x = value
 
-    @player_y.setter
-    def player_y(self, value: int): self._player_y = value
+    @y.setter
+    def y(self, value: int): self._y = value
 
-    @player_width.setter
-    def player_width(self, value: int): self._player_width = value
+    @pl_width.setter
+    def pl_width(self, value: int): self._width = value
+
+    @pl_height.setter
+    def pl_height(self, value: int): self._height = value
     
-    @player_speed.setter
-    def player_speed(self, value: int): self._player_speed = value
-
-    @player_height.setter
-    def player_height(self, value: int): self._player_height = value
+    @speed.setter
+    def speed(self, value: int): self.speed = value

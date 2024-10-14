@@ -5,9 +5,6 @@ class MyScreen():
     _instance = None
     _initialized = False
 
-    _width = 1200
-    _height = 720
-
     def __new__(cls, *args, **kwargs):
         if not isinstance(cls._instance, cls):
             cls._instance = super(MyScreen, cls).__new__(cls)
@@ -15,9 +12,10 @@ class MyScreen():
     
     def __init__(self, width=1200, height=720):
         if not MyScreen._initialized:
-            self._instance.width = width
-            self._instance.height = height
+            self._width = width
+            self._height = height
             MyScreen._initialized = True
+        else: print("Nope ^^")
 
 #-------------------------------------------------------------------------------
 
@@ -30,10 +28,10 @@ class MyScreen():
 #-------------------------------------------------------------------------------
 
     @property
-    def get_width(self):
+    def width(self):
         return self._width
 
     @property
-    def get_height(self):
+    def height(self):
         return self._height
     
